@@ -117,10 +117,7 @@
       if @options.reverseGeocoding
         @reverseGeocode(@marker.getPosition())
       else
-        if @lastResult
-          @lastResult.setLatLng(@marker.getPosition().lat(), @marker.getPosition().lng())
-        else
-          @lastResult = new AddressPickerResult(geometry: {location: @marker.getPosition()})
+        @lastResult = new AddressPickerResult(geometry: {location: @marker.getPosition()})
         $(this).trigger('addresspicker:selected', @lastResult)
 
     reverseGeocode: (position) ->
@@ -128,7 +125,10 @@
       @geocoder.geocode location: position, (results) =>
         if results && results.length > 0
           @lastResult = new AddressPickerResult(results[0], true)
-          $(this).trigger('addresspicker:selected', @lastResult)
+        else
+          @lastResult = new AddressPickerResult(geometry: {location: @marker.getPosition()})
+
+        $(this).trigger('addresspicker:selected', @lastResult)
 
     # Attr accessor
     getGMap: -> @map
